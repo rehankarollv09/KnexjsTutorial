@@ -1,0 +1,42 @@
+###
+POST http://localhost:8080/employee/login
+Content-Type: application/json
+
+{
+    "email":"rehankarol09@gmail.com",
+    "password":"Rehan@7860"
+}
+
+###
+POST http://localhost:8080/addEmployee
+Content-Type: application/json
+
+{
+    "first_name":"Rehan",
+    "last_name":"Karol",
+    "email":"rehankarol09@gmahil.com",
+    "password":"Rehan@7860",
+    "id":19
+}
+
+###
+POST http://localhost:8080/refreshToken
+Content-Type: application/json
+
+{
+    "refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJlbWFpbCI6InJlaGFua2Fyb2wwOUBnbWFpbC5jb20iLCJpYXQiOjE2NjgwNjYzMzh9.j3jiER7uHDIB8K7KJ8X6pipet-NAFeaRK8OEQ9ejobw"
+}
+
+###
+POST  http://localhost:8080/addBlog
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJlbWFpbCI6InJlaGFua2Fyb2wwOUBnbWFpbC5jb20iLCJpYXQiOjE2Njg0OTA2OTIsImV4cCI6MTY2ODQ5MjQ5Mn0.9Ux7qOXuyDvERIK1WRIU3M5_TXBf56vR_FH-AUNL9N0
+
+{
+    "id":1111,
+   "description":"Some Random Description"
+}
+
+###
+GET http://localhost:8080/getEmployee/8
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJlbWFpbCI6InJlaGFua2Fyb2wwOUBnbWFpbC5jb20iLCJpYXQiOjE2Njg0OTA2OTIsImV4cCI6MTY2ODQ5MjQ5Mn0.9Ux7qOXuyDvERIK1WRIU3M5_TXBf56vR_FH-AUNL9N0
