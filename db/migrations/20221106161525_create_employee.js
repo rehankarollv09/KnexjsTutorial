@@ -3,12 +3,13 @@
  * @returns { Promise<void> }
  */
 export function up(knex) {
-  const query = `create table employee
-    id SERIAL,
+  const query = `create table employee(
+    id SERIAL PRIMARY KEY,
     firstName VARCHAR(255) not null,
     lastName VARCHAR(255) not null,
-    email VARCHAR(255) not null,
-    password TEXT
+    email VARCHAR(255) UNIQUE not null,
+    password TEXT)
+    
     `;
   return knex.schema.raw(query);
 }

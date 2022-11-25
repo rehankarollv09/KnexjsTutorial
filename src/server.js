@@ -67,30 +67,32 @@ app.post("/addBlog", authenticateUser, async (req, res, ctx) => {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
 });
-app.post("/employee/SignUp", async (req, res, ctx) => {
+app.post("/employee/SignUp", verifyRecaptcha, async (req, res, ctx) => {
   try {
-    const password = await bcrypt.hash(req.body.password, 10);
-    const payload = {
-      id: req.body.id,
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      password: password,
-    };
-    await knex.raw(
-      "insert into employee(id,first_name,last_name,email,password) values(?,?,?,?,?)",
-      [
-        payload.id,
-        payload.first_name,
-        payload.last_name,
-        payload.email,
-        payload.password,
-      ]
+    const { rowCount } = await knex.raw(
+      "select email from employee where email=?",
+      [req.body.email]
     );
+    console.log(rowCount);
+    if (rowCount === 0) {
+      const password = await bcrypt.hash(req.body.password, 10);
+      const payload = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: password,
+      };
+      await knex.raw(
+        "insert into employee(firstName,lastName,email,password) values(?,?,?,?)",
+        [payload.firstName, payload.lastName, payload.email, payload.password]
+      );
 
-    return res.status(201).json({ message: "User created" });
+      return res.status(201).json({ message: "User created" });
+    } else {
+      return res.status(400).json({ message: "Email already exist" });
+    }
   } catch (err) {
-    return res.status(500).json({ message: err });
+    return res.status(500).json({ message: "Something Went Wrong" });
   }
 });
 app.put("/updateEmployee/:id", (req, res, ctx) => {

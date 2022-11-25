@@ -8,15 +8,14 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:8080/addEmployee
+POST http://localhost:8080/employee/SignUp
 Content-Type: application/json
 
 {
-    "first_name":"Rehan",
-    "last_name":"Karol",
+    "firstName":"Rehan",
+    "lastName":"Karol",
     "email":"rehankarol09@gmil.com",
-    "password":"Rehan@7860",
-    "id":20
+    "password":"Rehan@7860"
 }
 
 ###
