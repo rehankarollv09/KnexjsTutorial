@@ -1,13 +1,20 @@
 import express from "express";
 const app = express();
-import knex from "./db/db.js";
+import cors from "cors";
+import knex from "../db/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-app.use(express.json());
 import env from "dotenv";
-import { authenticateUser } from "../src/middleware/index.js";
+import { authenticateUser, verifyRecaptcha } from "../src/middleware/index.js";
 import { generateAccessToken } from "../src/helpers/index.js";
 env.config();
+app.use(express.json());
+app.use(
+  cors({
+    origin: "*",
+    allowedHeaders: ["g-recaptcha-response", "Content-Type"],
+  })
+);
 let refreshTokens = [];
 app.listen("8080", () => {
   console.log("Server started on port 8080");
@@ -60,36 +67,32 @@ app.post("/addBlog", authenticateUser, async (req, res, ctx) => {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
 });
-app.post("/addEmployee", async (req, res, ctx) => {
+app.post("/employee/SignUp", verifyRecaptcha, async (req, res, ctx) => {
   try {
-    const password = await bcrypt.hash(req.body.password, 10);
-    const payload = {
-      id: req.body.id,
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      password: password,
-    };
-    await knex.raw(
-      "insert into employee(id,first_name,last_name,email,password) values(?,?,?,?,?)",
-      [
-        payload.id,
-        payload.first_name,
-        payload.last_name,
-        payload.email,
-        payload.password,
-      ]
+    const { rowCount } = await knex.raw(
+      "select email from employee where email=?",
+      [req.body.email]
     );
-    /*  await knex("employee").insert({
-      id: req.body.id,
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      password: password,
-    }); */
-    return res.status(201).json({ message: "User created" });
+    console.log(rowCount);
+    if (rowCount === 0) {
+      const password = await bcrypt.hash(req.body.password, 10);
+      const payload = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: password,
+      };
+      await knex.raw(
+        "insert into employee(firstName,lastName,email,password) values(?,?,?,?)",
+        [payload.firstName, payload.lastName, payload.email, payload.password]
+      );
+
+      return res.status(201).json({ message: "User created" });
+    } else {
+      return res.status(400).json({ message: "Email already exist" });
+    }
   } catch (err) {
-    return res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something Went Wrong" });
   }
 });
 app.put("/updateEmployee/:id", (req, res, ctx) => {
@@ -135,7 +138,7 @@ app.get("/allBlogsofUser/:id", async (req, res, ctx) => {
       return res.send(blog);
     }); */
 });
-app.post("/employee/login", async (req, res, ctx) => {
+app.post("/employee/login", verifyRecaptcha, async (req, res, ctx) => {
   try {
     const email = req.body.email;
     const user = await knex
@@ -162,6 +165,7 @@ app.post("/employee/login", async (req, res, ctx) => {
         return res.status(401).json({ message: "Password Incorrect" });
       }
     }
+    return res.status(400).json({ message: "User not found" });
   } catch (err) {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
