@@ -46,24 +46,47 @@ app.post("/addBlog", authenticateUser, async (req, res, ctx) => {
     const payload = {
       id: req.body.id,
       description: req.body.description,
-      employee_id: req.user.id,
+      employee_id: req.user.userId,
     };
-    await knex("blog").insert({ ...payload });
+    console.log(req.user.userId);
+    //await knex("blog").insert({ ...payload });
+    await knex.raw(
+      "insert into blog(id,description,employee_id) values(?,?,?)",
+      [payload.id, payload.description, payload.employee_id]
+    );
     return res.status(200).json({ message: "Blog Created" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: "Something Went Wrong" });
   }
 });
 app.post("/addEmployee", async (req, res, ctx) => {
   try {
     const password = await bcrypt.hash(req.body.password, 10);
-    await knex("employee").insert({
+    const payload = {
       id: req.body.id,
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       email: req.body.email,
       password: password,
-    });
+    };
+    await knex.raw(
+      "insert into employee(id,first_name,last_name,email,password) values(?,?,?,?,?)",
+      [
+        payload.id,
+        payload.first_name,
+        payload.last_name,
+        payload.email,
+        payload.password,
+      ]
+    );
+    /*  await knex("employee").insert({
+      id: req.body.id,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      password: password,
+    }); */
     return res.status(201).json({ message: "User created" });
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
@@ -93,14 +116,24 @@ app.delete("/deleteEmployee/:id", (req, res, ctx) => {
     })
     .catch((err) => console.log(err));
 });
-app.get("/allBlogsofUser/:id", (req, res, ctx) => {
-  knex
+app.get("/allBlogsofUser/:id", async (req, res, ctx) => {
+  try {
+    const response = await knex.raw(
+      "select * from blog b inner join employee e on b.employee_id=e.id where b.employee_id=?",
+      [req.params.id]
+    );
+    console.log(response);
+    return res.status(200).json({ data: response.rows });
+  } catch (err) {
+    return res.status(500).json({ message: "Something Went Wrong" });
+  }
+  /* knex
     .from("blog")
     .innerJoin("employee", "blog.employee_id", "employee.id")
     .where("blog.employee_id", req.params.id)
     .then((blog) => {
       return res.send(blog);
-    });
+    }); */
 });
 app.post("/employee/login", async (req, res, ctx) => {
   try {

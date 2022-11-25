@@ -3,7 +3,7 @@ POST http://localhost:8080/employee/login
 Content-Type: application/json
 
 {
-    "email":"rehankarol09@gmail.com",
+    "email":"rehankarol09@gmil.com",
     "password":"Rehan@7860"
 }
 
@@ -14,9 +14,9 @@ Content-Type: application/json
 {
     "first_name":"Rehan",
     "last_name":"Karol",
-    "email":"rehankarol09@gmahil.com",
+    "email":"rehankarol09@gmil.com",
     "password":"Rehan@7860",
-    "id":19
+    "id":20
 }
 
 ###
@@ -30,13 +30,16 @@ Content-Type: application/json
 ###
 POST  http://localhost:8080/addBlog
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJlbWFpbCI6InJlaGFua2Fyb2wwOUBnbWFpbC5jb20iLCJpYXQiOjE2Njg0OTA2OTIsImV4cCI6MTY2ODQ5MjQ5Mn0.9Ux7qOXuyDvERIK1WRIU3M5_TXBf56vR_FH-AUNL9N0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwLCJlbWFpbCI6InJlaGFua2Fyb2wwOUBnbWlsLmNvbSIsImlhdCI6MTY2ODUzMDY0NiwiZXhwIjoxNjY4NTMyNDQ2fQ.k4i3J3DoU5U0Osl5SzL8TX-012iot0ZrIjyVzQDdRZ0
 
 {
-    "id":1111,
-   "description":"Some Random Description"
+    "id":126,
+   "description":"Description 6"
 }
 
 ###
 GET http://localhost:8080/getEmployee/8
 Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJlbWFpbCI6InJlaGFua2Fyb2wwOUBnbWFpbC5jb20iLCJpYXQiOjE2Njg0OTA2OTIsImV4cCI6MTY2ODQ5MjQ5Mn0.9Ux7qOXuyDvERIK1WRIU3M5_TXBf56vR_FH-AUNL9N0
+
+###
+GET http://localhost:8080/allBlogsofUser/20
