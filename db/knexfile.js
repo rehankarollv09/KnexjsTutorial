@@ -1,12 +1,11 @@
-
-import env from "dotenv"
+import env from "dotenv";
 env.config();
 export const development = {
   client: "postgresql",
   connection: {
-    database: process.env.DATABASE_NAME,
-    user: process.env.DATABASE_USERNAME,
-    password: process.env.DATABASE_PASSWORD,
+    database: "Blog",
+    user: "postgres",
+    password: "1234",
   },
   pool: {
     min: 2,

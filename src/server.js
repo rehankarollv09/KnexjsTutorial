@@ -1,13 +1,20 @@
 import express from "express";
 const app = express();
-import knex from "./db/db.js";
+import cors from "cors";
+import knex from "../db/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-app.use(express.json());
 import env from "dotenv";
-import { authenticateUser } from "../src/middleware/index.js";
+import { authenticateUser, verifyRecaptcha } from "../src/middleware/index.js";
 import { generateAccessToken } from "../src/helpers/index.js";
 env.config();
+app.use(express.json());
+app.use(
+  cors({
+    origin: "*",
+    allowedHeaders: ["g-recaptcha-response", "Content-Type"],
+  })
+);
 let refreshTokens = [];
 app.listen("8080", () => {
   console.log("Server started on port 8080");
@@ -60,7 +67,7 @@ app.post("/addBlog", authenticateUser, async (req, res, ctx) => {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
 });
-app.post("/addEmployee", async (req, res, ctx) => {
+app.post("/employee/SignUp", async (req, res, ctx) => {
   try {
     const password = await bcrypt.hash(req.body.password, 10);
     const payload = {
@@ -80,16 +87,10 @@ app.post("/addEmployee", async (req, res, ctx) => {
         payload.password,
       ]
     );
-    /*  await knex("employee").insert({
-      id: req.body.id,
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      password: password,
-    }); */
+
     return res.status(201).json({ message: "User created" });
   } catch (err) {
-    return res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: err });
   }
 });
 app.put("/updateEmployee/:id", (req, res, ctx) => {
@@ -135,7 +136,7 @@ app.get("/allBlogsofUser/:id", async (req, res, ctx) => {
       return res.send(blog);
     }); */
 });
-app.post("/employee/login", async (req, res, ctx) => {
+app.post("/employee/login", verifyRecaptcha, async (req, res, ctx) => {
   try {
     const email = req.body.email;
     const user = await knex
@@ -162,6 +163,7 @@ app.post("/employee/login", async (req, res, ctx) => {
         return res.status(401).json({ message: "Password Incorrect" });
       }
     }
+    return res.status(400).json({ message: "User not found" });
   } catch (err) {
     return res.status(500).json({ message: "Something Went Wrong" });
   }
