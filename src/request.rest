@@ -29,11 +29,10 @@ Content-Type: application/json
 ###
 POST  http://localhost:8080/addBlog
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwLCJlbWFpbCI6InJlaGFua2Fyb2wwOUBnbWlsLmNvbSIsImlhdCI6MTY2ODUzMDY0NiwiZXhwIjoxNjY4NTMyNDQ2fQ.k4i3J3DoU5U0Osl5SzL8TX-012iot0ZrIjyVzQDdRZ0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImVtYWlsIjoicmVoYW4ua2Fyb2xAbGF1bjc4Y2h2ZW50dXJlcy5jbyIsImlhdCI6MTY2OTM5Njg0MSwiZXhwIjoxNjY5Mzk4NjQxfQ.PQkG1abBLeErG0ME6azjLPnYbX2DBd2v3JoakW6Cqm4
 
 {
-    "id":126,
-   "description":"Description 6"
+   "description":"Description q1"
 }
 
 ###

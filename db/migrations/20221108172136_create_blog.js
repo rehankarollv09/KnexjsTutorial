@@ -3,11 +3,11 @@
  * @returns { Promise<void> }
  */
 export function up(knex) {
-  return knex.schema.createTable("blog", (table) => {
-    table.increments("id");
-    table.string("description", 244).notNullable();
-    table.integer("employee_id").references("id").inTable("employee");
-  });
+  const query = `create table blog(id Serial Primary key,description text,employee_id int,CONSTRAINT fk_employee
+      FOREIGN KEY(employee_id) 
+	  REFERENCES employee(id)
+	  ON DELETE SET NULL)`;
+  return knex.schema.raw(query);
 }
 
 /**

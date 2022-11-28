@@ -39,7 +39,6 @@ app.post("/refreshToken", (req, res) => {
 });
 app.get("/getEmployee/:id", authenticateUser, (req, res) => {
   const id = req.params.id;
-  console.log(req.user);
   knex
     .select()
     .from("employee")
@@ -51,16 +50,13 @@ app.get("/getEmployee/:id", authenticateUser, (req, res) => {
 app.post("/addBlog", authenticateUser, async (req, res, ctx) => {
   try {
     const payload = {
-      id: req.body.id,
       description: req.body.description,
       employee_id: req.user.userId,
     };
-    console.log(req.user.userId);
-    //await knex("blog").insert({ ...payload });
-    await knex.raw(
-      "insert into blog(id,description,employee_id) values(?,?,?)",
-      [payload.id, payload.description, payload.employee_id]
-    );
+    await knex.raw("insert into blog(description,employee_id) values(?,?)", [
+      payload.description,
+      payload.employee_id,
+    ]);
     return res.status(200).json({ message: "Blog Created" });
   } catch (err) {
     console.log(err);
@@ -125,7 +121,6 @@ app.get("/allBlogsofUser/:id", async (req, res, ctx) => {
       "select * from blog b inner join employee e on b.employee_id=e.id where b.employee_id=?",
       [req.params.id]
     );
-    console.log(response);
     return res.status(200).json({ data: response.rows });
   } catch (err) {
     return res.status(500).json({ message: "Something Went Wrong" });

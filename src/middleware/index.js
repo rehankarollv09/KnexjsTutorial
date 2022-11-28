@@ -19,7 +19,6 @@ export const verifyRecaptcha = async (req, res, next) => {
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     const token = req.headers["g-recaptcha-response"];
     if (!token) {
-      console.log("im here");
       return res.status(400).json({ message: "Recaptcha Verification Failed" });
     }
     if (token) {
